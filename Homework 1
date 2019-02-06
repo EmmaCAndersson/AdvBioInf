@@ -1,4 +1,4 @@
-# Homework - Unix tasks
+# Homework 1 - Unix tasks  -  Emma Andersson
 
 #####Task 1#####
 #### 1. How many genes are on chromosome II in 
@@ -74,9 +74,6 @@ saccharomyces_cerevisiae_R64-2-1_20150113.gff
 #Inspect the contents of saccharomyces_cerevisiae_R64-2-1_20150113.gff (that is in "data")
 less saccharomyces_cerevisiae_R64-2-1_20150113.gff
 
-#Output:
-# 3.gff
-
 
 #Count the genes by counting how many times a line starts(^) with "chrII" in the file
 #To add a tab after chrII (to exclude chrIII), add '\t'.
@@ -132,7 +129,7 @@ grep -v "^>" S288C_reference_sequence_R64-2-1_20150113.fsa | tr -d "[:space:]" |
 allnts=$(grep -v "^>" S288C_reference_sequence_R64-2-1_20150113.fsa | tr -d "[:space:]" | wc --chars)
 
 
-## Divide the outputs. use $ to sppecify that they are numbers
+## Divide the outputs. use $ to specify that they are numbers
 ##count with calculator language bc, -l=standard math library). 
 echo "$onlygc / $allnts" | bc -l
 
@@ -174,7 +171,7 @@ Y55_JRIF00000000_SGD 100%[===================>]   2.17M  2.22MB/s    in 1.0s
 ##Decompress gz 
 gunzip Y55_JRIF00000000_SGD_pep.fsa.gz
 
-#Output: 
+#Output: -
 
 
 ##look at the file (it is decompressed now, so lose the ".gz")
@@ -185,6 +182,7 @@ less Y55_JRIF00000000_SGD_pep.fsa
 
 ##Count the GC:s 
 # take away the lines starting with ">", the spaces(\t) and the characters that are not C or G:s.
+# exclude empty lines (grep .)
 # Count the characters (wc -m)
 grep -v "^>\|\t" Y55_JRIF00000000_SGD_cds.fsa |  tr -d "A\|T\|N\|a\|t\|n\|Y\|[:space:]" | grep . | wc -m
 
@@ -196,7 +194,7 @@ grep -v "^>\|\t" Y55_JRIF00000000_SGD_cds.fsa |  tr -d "A\|T\|N\|a\|t\|n\|Y\|[:s
 only_gc_task_3=$(grep -v "^>\|\t" Y55_JRIF00000000_SGD_cds.fsa |  tr -d "A\|T\|N\|a\|t\|n\|Y\|[:space:]" | grep . | wc -m)
 
 
-##Count the nucteotides. 
+##Count all the nucteotides. 
 #Since N:s and Y:s were excluded when counting the GC content, they are excluded here as well.
 grep -v "^>\|\t" Y55_JRIF00000000_SGD_cds.fsa |  tr -d "|N\|n\|Y\|[:space:]" | grep . | wc -m
 

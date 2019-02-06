@@ -1,0 +1,272 @@
+# Homework - Unix tasks
+
+#####Task 1#####
+#### 1. How many genes are on chromosome II in 
+#### saccharomyces_cerevisiae_R64-2-1_20150113.gff ?
+
+### Download a reference yeast genome as compressed archive to the current directory 
+wget https://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/S288C_reference_genome_Current_Release.tgz
+
+#Output: 
+--2019-01-24 07:53:05--  https://downloads.yeastgenome.org/sequence/S288C_refer  ence/genome_releases/S288C_reference_genome_Current_Release.tgz
+Resolving downloads.yeastgenome.org (downloads.yeastgenome.org)... 171.67.205.1  04
+Connecting to downloads.yeastgenome.org (downloads.yeastgenome.org)|171.67.205.  104|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 17657104 (17M) [application/x-gzip]
+Saving to: 'S288C_reference_genome_Current_Release.tgz.1'
+
+S288C_reference_gen 100%[==================>]  16.84M  7.04MB/s    in 2.4s
+
+2019-01-24 07:53:08 (7.04 MB/s) - 'S288C_reference_genome_Current_Release.tgz.1  ' saved [17657104/17657104]
+
+
+
+# Decompress the archive (will create a new diretory)
+tar -xzvf S288C_reference_genome_Current_Release.tgz
+
+#Output:
+S288C_reference_genome_R64-2-1_20150113/
+S288C_reference_genome_R64-2-1_20150113/rna_coding_R64-2-1_20150113.fasta
+S288C_reference_genome_R64-2-1_20150113/NotFeature_R64-2-1_20150113.fasta
+S288C_reference_genome_R64-2-1_20150113/orf_coding_all_R64-2-1_20150113.fasta
+S288C_reference_genome_R64-2-1_20150113/other_features_genomic_R64-2-1_20150113asta
+S288C_reference_genome_R64-2-1_20150113/S288C_reference_sequence_R64-2-1_201501.fsa
+S288C_reference_genome_R64-2-1_20150113/gene_association_R64-2-1_20150113.sgd
+S288C_reference_genome_R64-2-1_20150113/orf_trans_all_R64-2-1_20150113.fasta
+S288C_reference_genome_R64-2-1_20150113/saccharomyces_cerevisiae_R64-2-1_201501.gff
+
+# The data is now extracted and downloaded into the directory: S288C_reference_genome_R64-2-1_20150113
+
+
+
+#Rename the directory to "data"
+mv S288C_reference_genome_R64-2-1_20150113 data
+
+#Output: None
+
+
+# List the files in the directory called data 
+ls data
+
+#Output:
+NotFeature_R64-2-1_20150113.fasta
+S288C_reference_genome_R64-2-1_20150113
+S288C_reference_sequence_R64-2-1_20150113.fsa
+gene_association_R64-2-1_20150113.sgd
+orf_coding_all_R64-2-1_20150113.fasta
+orf_coding_all_R64-2-1_20150113_RNA.fasta
+orf_trans_all_R64-2-1_20150113.fasta
+other_features_genomic_R64-2-1_20150113.fasta
+rna_coding_R64-2-1_20150113.fasta
+saccharomyces_cerevisiae_R64-2-1_20150113.gff
+
+
+# Move to the directory "data"
+# cd data
+
+#Confirm that you are in the "data" directory
+# pwd
+
+#Output:
+# /home/student1/data
+
+
+#Inspect the contents of saccharomyces_cerevisiae_R64-2-1_20150113.gff (that is in "data")
+less saccharomyces_cerevisiae_R64-2-1_20150113.gff
+
+#Output:
+# 3.gff
+
+
+#Count the genes by counting how many times a line starts(^) with "chrII" in the file
+#To add a tab after chrII (to exclude chrIII), add '\t'.
+#grep will give the lines and wc -l will count them  (-l = lines)
+
+grep -P '^chrII\t' saccharomyces_cerevisiae_R64-2-1_20150113.gff | wc -l
+
+
+#Output:
+# 1556
+
+#####--> There are 1556 genes in chromosome II
+
+#####################################################
+
+##### Task 2 #####
+#### 2. Count GC content in S288C_reference_sequence_R64-2-1_20150113.fsa
+
+#Look at S288C_reference_sequence_R64-2-1_20150113.fsa
+less S288C_reference_sequence_R64-2-1_20150113.fsa
+
+##Count the G:s and C:s in the file. 
+##grep -v "^>" --> don't look at the lines starting with ">" because these can also contain 
+#C:s and G:s, and they do not show the nucleotides. 
+##tr -d --> delete "something". 
+##wc = count the characters (--chars or -m) (that are left)
+##grep . will exclude empty lines (created from deleting A:s and T:s
+
+
+grep -v "^>" S288C_reference_sequence_R64-2-1_20150113.fsa |  tr -d "A\|T\|[:space:]" | grep .| wc --chars
+
+
+#Output
+# 4637677
+
+
+#capture the output as "onlygc"
+
+onlygc=$(grep -v "^>" S288C_reference_sequence_R64-2-1_20150113.fsa |  tr -d "A\|T\|[:space:]" | grep .| wc --chars)
+
+
+#Count the amount of nucleotides
+#grep -v "^>" --> don't look at lines starting with ">". 
+#Then count the characters (--chars or -m) (of what is left)
+
+grep -v "^>" S288C_reference_sequence_R64-2-1_20150113.fsa | tr -d "[:space:]" | wc --chars
+
+#Output:
+# 12157105
+
+
+#capture the output as "allnts"
+allnts=$(grep -v "^>" S288C_reference_sequence_R64-2-1_20150113.fsa | tr -d "[:space:]" | wc --chars)
+
+
+## Divide the outputs. use $ to sppecify that they are numbers
+##count with calculator language bc, -l=standard math library). 
+echo "$onlygc / $allnts" | bc -l
+
+#Output:
+# .38147873198430053865
+
+
+
+#### ----> GC content is ~38%
+
+
+###########################################
+
+
+##### Task 3 #####
+####3.Download and decompress the ORFs of another strain (Y55) from 
+#https://downloads.yeastgenome.org/sequence/strains/Y55/Y55_SGD_2015_JRIF00000000/Y55_JRIF00000000_SGD_pep.fsa.gz
+
+#Move back to home directory
+cd
+
+#Download
+wget https://downloads.yeastgenome.org/sequence/strains/Y55/Y55_SGD_2015_JRIF00000000/Y55_JRIF00000000_SGD_pep.fsa.gz
+
+
+#Output:
+https://downloads.yeastgenome.org/sequence/strains/Y55/Y55_SGD_2015_JRIF00000000/Y55_JRIF00000000_SGD_pep.fsa.gz
+Resolving downloads.yeastgenome.org (downloads.yeastgenome.org)... 171.67.205.104
+Connecting to downloads.yeastgenome.org (downloads.yeastgenome.org)|171.67.205.104|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 2281131 (2.2M) [application/x-gzip]
+Saving to: 'Y55_JRIF00000000_SGD_pep.fsa.gz'
+
+Y55_JRIF00000000_SGD 100%[===================>]   2.17M  2.22MB/s    in 1.0s
+
+2019-01-30 15:21:59 (2.22 MB/s) - 'Y55_JRIF00000000_SGD_pep.fsa.gz' saved [2281131/2281131]
+
+
+##Decompress gz 
+gunzip Y55_JRIF00000000_SGD_pep.fsa.gz
+
+#Output: 
+
+
+##look at the file (it is decompressed now, so lose the ".gz")
+less Y55_JRIF00000000_SGD_pep.fsa
+
+
+####### 3a #######
+
+##Count the GC:s 
+# take away the lines starting with ">", the spaces(\t) and the characters that are not C or G:s.
+# Count the characters (wc -m)
+grep -v "^>\|\t" Y55_JRIF00000000_SGD_cds.fsa |  tr -d "A\|T\|N\|a\|t\|n\|Y\|[:space:]" | grep . | wc -m
+
+#Output:
+# 3191927
+
+
+##Capture the output as only_gc_task_3
+only_gc_task_3=$(grep -v "^>\|\t" Y55_JRIF00000000_SGD_cds.fsa |  tr -d "A\|T\|N\|a\|t\|n\|Y\|[:space:]" | grep . | wc -m)
+
+
+##Count the nucteotides. 
+#Since N:s and Y:s were excluded when counting the GC content, they are excluded here as well.
+grep -v "^>\|\t" Y55_JRIF00000000_SGD_cds.fsa |  tr -d "|N\|n\|Y\|[:space:]" | grep . | wc -m
+
+#Output:
+# 8073834
+
+
+##Capture the output as all_nts_task_3
+all_nts_task_3=$(grep -v "^>\|\t" Y55_JRIF00000000_SGD_cds.fsa |  tr -d "|N\|n\|Y\|[:space:]" | grep . | wc -m)
+
+
+##Count the ratio of GC by dividig outputs only_gc_task_3 with all_nts_task_3
+
+echo "$only_gc_task_3 / $all_nts_task_3" | bc -l
+
+#Output:
+# .39534216333900350192
+
+
+
+##### The GC content is ~40%
+##### The GC content in the other strain was ~38%
+##### The GC contents are very similar but it is higher in the Y55 strain.
+
+
+
+
+###### 3b ####### 
+
+## Count the orfs by counting the lines starting with a ">"
+grep "^>" Y55_JRIF00000000_SGD_cds.fsa | wc -l
+
+#Output:
+# 5330
+
+
+##Go into the data directory to access the file orf_coding_all_R64-2-1_20150113.fasta
+cd data
+
+# Output: -
+
+
+# Show the content of the file
+less orf_coding_all_R64-2-1_20150113.fasta
+
+## Count the orfs by counting the lines starting with a ">"
+grep "^>" orf_coding_all_R64-2-1_20150113.fasta | wc -l
+
+#Output:
+# 6713
+
+
+#### --> The number of ORFs is larger in the reference genome
+
+
+##### 3c ###### Count the common ORFs
+
+####Find the common ORFs in orf_coding_all_R64-2-1_20150113.fasta and Y55_JRIF00000000_SGD_cds.fsa
+## Take the lines starting with ">", because thet is where the IDs are, that will compared
+## Cut out the first column where it is separated (by a space " " for orf_... and by a "_" for Y55) - these are the IDs which we will compare 
+## sort the file content 
+## Find the common lines in both files => "comm"
+# Take away the first two outputs of the comm-command ("-12"), which are the unique elements in the files --> to only show the common elements
+#
+## count the number of lines (that are equal) with "wc -l"
+
+
+comm -12 <( grep "^>" ./data/orf_coding_all_R64-2-1_20150113.fasta |cut -d" " -f1 | sort ) <( grep "^>" Y55_JRIF00000000_SGD_cds.fsa | cut -d"_" -f1 | sort ) | wc -l
+
+#Output: 
+# 5168
+
+####--> There are 5168 common orfs.
